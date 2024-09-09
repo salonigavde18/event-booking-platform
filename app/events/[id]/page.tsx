@@ -1,5 +1,7 @@
 "use client";
+
 import { useState } from 'react';
+import { useRouter } from 'next/navigation'; 
 import eventsData from '../../../data/eventsData'; 
 import relatedEvents from '../../../data/eventsData'; 
 
@@ -8,6 +10,8 @@ export default function EventDetails({ params }: { params: { id: string } }) {
   const event = eventsData.find((event) => event.id === parseInt(id));
 
   const [quantity, setQuantity] = useState(1);
+  const [ticketType, setTicketType] = useState('General Admission');
+  const router = useRouter();
 
   if (!event) {
     return <div className="container mx-auto py-8">Event not found.</div>;
@@ -15,6 +19,14 @@ export default function EventDetails({ params }: { params: { id: string } }) {
 
   const handleQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setQuantity(parseInt(e.target.value));
+  };
+
+  const handleTicketTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setTicketType(e.target.value);
+  };
+
+  const handleBookNow = () => {
+    router.push(`/checkout?eventId=${event.id}&ticketType=${ticketType}&quantity=${quantity}`);
   };
 
   return (
@@ -49,9 +61,13 @@ export default function EventDetails({ params }: { params: { id: string } }) {
         <div className="flex justify-between mb-4">
           <div>
             <p className="font-semibold">Ticket Type</p>
-            <select className="border rounded p-2 bg-custompeach">
-              <option>General Admission - $50</option>
-              <option>VIP - $100</option>
+            <select 
+              value={ticketType} 
+              onChange={handleTicketTypeChange} 
+              className="border rounded p-2 bg-custompeach"
+            >
+              <option value="General Admission">General Admission - $50</option>
+              <option value="VIP">VIP - $100</option>
             </select>
           </div>
 
@@ -67,7 +83,10 @@ export default function EventDetails({ params }: { params: { id: string } }) {
           </div>
         </div>
 
-        <button className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600">
+        <button
+          onClick={handleBookNow}
+          className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600"
+        >
           Book Now
         </button>
       </div>
@@ -87,7 +106,6 @@ export default function EventDetails({ params }: { params: { id: string } }) {
       <div className="mb-8">
         <h2 className="text-2xl font-bold mb-4">Venue Information</h2>
         <p className="mb-4">{event.location}</p>
-        {/* Embed Google Map */}
         <iframe
           src={`https://maps.google.com/maps?q=${encodeURIComponent(
             event.location
@@ -124,7 +142,6 @@ export default function EventDetails({ params }: { params: { id: string } }) {
           <p className="text-sm text-black">Rating: ★★★★☆</p>
           <p className="mt-2">Amazing event, highly recommend!</p>
         </div>
-        {/* Add more reviews here */}
       </div>
     </div>
   );

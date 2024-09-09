@@ -1,5 +1,5 @@
 // data/eventsData.ts
-interface EventData {
+export interface EventData {
   id: number;
   title: string;
   date: string;
