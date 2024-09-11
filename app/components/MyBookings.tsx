@@ -1,46 +1,42 @@
-"use client"
-import React from 'react';
+"use client";
+import React, { useState, useEffect } from 'react';
+import { getUserBookings } from '../api/user';
+import io from "socket.io-client";
+import { Card } from '@/components/ui/card';
+
+const socket = io("http://localhost:3000/"); 
 
 interface Booking {
   id: number;
-  eventTitle: string;
-  eventDate: string;
+  event: string;
+  date: string;
   status: string;
 }
 
-const bookings: Booking[] = [
-  { id: 1, eventTitle: 'Music Concert', eventDate: '2024-09-15', status: 'Upcoming' },
-  { id: 2, eventTitle: 'Art Exhibition', eventDate: '2024-08-10', status: 'Completed' }
-];
+interface MyBookingsProps {
+  bookings: Booking[];
+}
 
-const MyBookings: React.FC = () => {
+const MyBookings: React.FC<MyBookingsProps> = ({ bookings }) => {
   return (
-    <div className="p-6 bg-white shadow-lg rounded-lg border border-gray-200">
-      <h2 className="text-2xl font-bold mb-4">My Bookings</h2>
-      <ul>
+    <Card className="p-6 bg-white rounded shadow-md">
+      <h2 className="text-xl font-semibold mb-4">My Bookings</h2>
+      <div>
         {bookings.map((booking) => (
-          <li key={booking.id} className="border-b border-gray-300 py-4">
-            <div className="flex justify-between items-center">
+          <div key={booking.id} className="border-b py-4">
+            <div className="flex justify-between">
               <div>
-                <p className="text-lg font-semibold">{booking.eventTitle}</p>
-                <p className="text-gray-600">{booking.eventDate}</p>
-                <p className="text-gray-500">Status: {booking.status}</p>
+                <p className="text-lg font-semibold">{booking.event}</p>
+                <p className="text-gray-600">{booking.date}</p>
               </div>
               <div>
-                <button className="bg-blue-500 text-white px-4 py-2 rounded mr-2 hover:bg-blue-600">
-                  View Details
-                </button>
-                {booking.status === 'Upcoming' && (
-                  <button className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">
-                    Cancel Booking
-                  </button>
-                )}
+                <p className="text-gray-600">Status: {booking.status}</p>
               </div>
             </div>
-          </li>
+          </div>
         ))}
-      </ul>
-    </div>
+      </div>
+    </Card>
   );
 };
 

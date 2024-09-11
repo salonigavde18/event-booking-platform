@@ -1,25 +1,19 @@
-"use client"
+"use client";
 import React from 'react';
-import { useRouter } from 'next/navigation';
+import { Button } from '@/components/ui/button';
 
-const LogoutButton: React.FC = () => {
-  const router = useRouter();
-
+export default function LogoutButton() {
   const handleLogout = () => {
     // Implement logout logic here
-    router.push('/login'); // Redirect to login page after logout
+    alert('Logged out successfully!');
   };
 
   return (
-    <div className="text-center mt-8">
-      <button
-        onClick={handleLogout}
-        className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-      >
-        Logout
-      </button>
-    </div>
+    <Button 
+      onClick={handleLogout} 
+      className="w-full max-w-sm bg-black hover:bg-gray-500 text-white"
+    >
+      Logout
+    </Button>
   );
-};
-
-export default LogoutButton;
+}

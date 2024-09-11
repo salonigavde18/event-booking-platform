@@ -1,51 +1,60 @@
-"use client"
+"use client";
 import React, { useState } from 'react';
+import { updateUserSettings } from '../api/user';
+import { Card } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Switch } from '@/components/ui/switch';
+// Define the Settings interface
+interface Settings {
+  password: boolean;   
+  notifications: boolean;
+}
 
-const Settings: React.FC = () => {
+export default function Settings({ settings }: { settings: Settings }) {
   const [newPassword, setNewPassword] = useState('');
-  const [notifications, setNotifications] = useState(true);
+  const [notifications, setNotifications] = useState(settings.notifications);
 
-  const handlePasswordChange = () => {
-    
+  const handlePasswordChange = async () => {
+    // Update settings with the new password
+    await updateUserSettings({ ...settings, password: newPassword });
+    alert('Password changed successfully!');
   };
 
-  const handleNotificationToggle = () => {
-    setNotifications(!notifications);
+  const handleNotificationToggle = async () => {
+    const updatedNotifications = !notifications;
+    setNotifications(updatedNotifications);
+    // Update settings with the new notifications value
+    await updateUserSettings({ ...settings, notifications: updatedNotifications });
   };
 
   return (
-    <div className="p-6 bg-white shadow-lg rounded-lg border border-gray-200">
-      <h2 className="text-2xl font-bold mb-4">Settings</h2>
+    <Card className="p-6 bg-white rounded shadow-md">
+      <h2 className="text-xl font-semibold mb-4">Settings</h2>
       <div className="mb-6">
-        <h3 className="text-xl font-semibold mb-2">Change Password</h3>
-        <input
+        <h3 className="text-lg font-semibold mb-2">Change Password</h3>
+        <Input
           type="password"
           placeholder="New Password"
           value={newPassword}
           onChange={(e) => setNewPassword(e.target.value)}
-          className="border rounded p-2 mb-2 w-full"
+          className="mb-4"
         />
-        <button
-          onClick={handlePasswordChange}
-          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-        >
+        <Button onClick={handlePasswordChange} className="mt-4">
           Change Password
-        </button>
+        </Button>
       </div>
       <div>
-        <h3 className="text-xl font-semibold mb-2">Manage Notifications</h3>
-        <label className="flex items-center space-x-2">
-          <input
-            type="checkbox"
-            checked={notifications}
+        <h3 className="text-lg font-semibold mb-2">Manage Notifications</h3>
+        <div className="flex items-center">
+          <Switch 
+            checked={notifications} 
             onChange={handleNotificationToggle}
-            className="form-checkbox"
+            className="mr-2"
           />
           <span className="text-gray-600">Enable Notifications</span>
-        </label>
+        </div>
       </div>
-    </div>
+    </Card>
   );
-};
-
-export default Settings;
+}
